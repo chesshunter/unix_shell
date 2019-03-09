@@ -40,7 +40,6 @@ std::vector<command_block> handle_input(string input_string) {
         } else if (*it == '>' || *it == '|') {
             //ending operators! Time to end this block!
             if (out_block.command.size() > 0) {
-                out_block.arguments.push_back(nullptr);
                 out_vec.push_back(out_block);
                 out_block.after = *it;
                 out_block = command_block();
@@ -64,7 +63,6 @@ std::vector<command_block> handle_input(string input_string) {
     }
 
     if (out_block.command.size() > 0) {
-        out_block.arguments.push_back(nullptr);
         out_vec.push_back(out_block);
     }
 

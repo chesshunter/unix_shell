@@ -32,7 +32,10 @@ int execute_commands(std::vector<command_block> commands) {
     if (commands.at(0).command == "exit" || commands.at(0).command == "quit") {
         return 0; // if first word is exit, then exit the shell
     } else if (commands.at(0).command == "cd") {
-        chdir(commands.at(0).arguments.at(0).c_str()); //change dir to second item in input if first is cd
+        //change dir to second item in input if first is cd
+        int error = chdir(commands.at(0).arguments.at(0).c_str());
+        if (error == -1)
+            perror(commands.at(0).command.c_str());
         return 1;
     }
 
@@ -47,6 +50,8 @@ int execute_commands(std::vector<command_block> commands) {
         background = commands.back().ampersand; //Is this supposed to run in the background?
         command_block active = commands.at(0);
 
+        //const_cast converts a const char* to a char*
+        argv.push_back(const_cast<char*>(active.command.c_str()));
         for (int j = 0; j < active.arguments.size(); j++) //make arguments into vector<char*>
             argv.push_back(const_cast<char*>(active.arguments.at(i).c_str()));
         argv.push_back(nullptr); //terminate with nullptr
@@ -55,7 +60,7 @@ int execute_commands(std::vector<command_block> commands) {
         if (pid == 0) {
             //child
             char error = execvp(active.command.c_str(), argv.data());
-            perror(&error);
+            perror(argv.at(0));
             exit(1); //if we're still here, execution failed: print error message and exit
         } else {
             wait(NULL);
