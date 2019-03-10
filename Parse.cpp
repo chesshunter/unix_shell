@@ -27,6 +27,7 @@ std::vector<command_block> handle_input(string input_string) {
     auto it = input_string.begin();
     bool is_string = false;
     command_block out_block;
+    out_block.ampersand = false;
     vector<command_block> out_vec;
     string working = "";
 
@@ -40,9 +41,10 @@ std::vector<command_block> handle_input(string input_string) {
         } else if (*it == '>' || *it == '|') {
             //ending operators! Time to end this block!
             if (out_block.command.size() > 0) {
-                out_vec.push_back(out_block);
                 out_block.after = *it;
+                out_vec.push_back(out_block);
                 out_block = command_block();
+                out_block.ampersand = false;
             }
         } else if (*it == ' ' || it == input_string.end() - 1) {
             //reached a new area, break and slot into the block.
@@ -66,14 +68,6 @@ std::vector<command_block> handle_input(string input_string) {
         out_vec.push_back(out_block);
     }
 
-    //debugging
-    for (int j = 0; j < out_vec.size(); j++) {
-        out_block = out_vec.at(j);
-        cout << out_block.command << endl;
-        for (int i = 0; i < out_block.arguments.size(); i++)
-            cout << out_block.arguments.at(i) << ", ";
-        cout << endl << out_block.after << endl;
-    }
     return out_vec;
 
 }
