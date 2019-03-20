@@ -1,4 +1,4 @@
-#include "Helpers.h"
+ #include "Helpers.h"
 
 using namespace std;
 string command_prompt() {
@@ -32,6 +32,9 @@ int execute_commands(std::vector<command_block>& commands, std::vector<int>& run
     for (int i = 0; i < running_pids.size(); i++) {
         int status;
         waitpid(running_pids.at(i), &status, WNOHANG);
+        if ( WIFEXITED(status)) {
+            running_pids.erase(running_pids.begin() + i);
+        }
     }
 
     //special commands, which ignore the rest of the input
@@ -50,7 +53,7 @@ int execute_commands(std::vector<command_block>& commands, std::vector<int>& run
         else
             new_path = commands.at(0).arguments.at(0).c_str();
         int error = chdir(new_path.c_str());
-        
+
         if (error == -1) {
             previous_path = temp_path;
             perror(new_path.c_str());
@@ -76,7 +79,6 @@ int execute_commands(std::vector<command_block>& commands, std::vector<int>& run
     }
 
     for (int i = 0; i < commands.size(); i++) {
-
         int pipe_fds[2];
         pipe(pipe_fds); //create pipe at wherever
 
@@ -130,25 +132,4 @@ int execute_commands(std::vector<command_block>& commands, std::vector<int>& run
         argv = {};
     }
     return 1;
-    //probably not actually ready for this yet, but... let's try and plan it out.
-    /*
-    Loop through every command block in the vector.
-    For each, check if it gets input from a file. Also check what comes after it (standard out, file out, or pipe)
-    After that, set it up so it can run all of the stuffs in a series!
-    Don't worry, ampersand only comes at the very last one, so we don't need to worry too much about that
-    File input will only come as the second to last argument of a command, so you can just check there!
-    Set pipeline between main and child, then set just move the non-parent end of it? I mean. I think that makes sense to me.
-    Idk, I'll have to figure out that part later...
-    Output redirection (to file) can only come on the last command as well
-
-    Will also need to handle special cases like cd and cd -
-    Need to figure out how to track env variables
-
-    When a command wants to be backgrounded, fork it and then **don't** wait for it
-        Prolly just do a check after every other program call or smth? idk if that's feasible
-
-    As for that relative directory thing... I feel like you could probably just *try* it with absolute directory, if fails try elsewhere?
-    idk lol
-
-    cd inside of a pipe array doesn't do anything */
 }

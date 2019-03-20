@@ -12,7 +12,7 @@ main (int argc, char** argv) {
   std::string command;
   int running = 1;
   vector<int> running_pids;
-  //main input loop. Will be turned into while later.
+  //main input loop. 
   while (running != 0) {
     //print prompt
     cout << command_prompt() << endl;

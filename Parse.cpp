@@ -1,26 +1,6 @@
 #include "Parse.h"
 
 using namespace std;
-/*split into different commands, and then also maybe the output.  (split on |, and possibly >. Careful of strings!)
-split each individual command into its various sub-pieces: handle tokens, arguments, and modification operators
-    Store each command as a new object type, then execute them all sequentially?
-
-
-/*
-be able to handle strings that contain special symbols (&, |, >, <, all that)
-Split based on strings first (most practical way to build around strings)
-    Oo... what if instead we replaced all symbols of interest inside strings to other things
-    Then transmuted them back after we'd done the other processing? Wouldn't that be neat...
-    Probably stupid though, lmao.
-Then split based on pipes
-Then find symbol stuff
-
-//or... split based on | and >, then split each command internally.
-//Ampersand can only be at end of the input!
-//THEREFORE: check the last command_block if it's ampersanded.
-
-Use WNOHANG flag on wait() to check if a child process has ended.
-*/
 
 //return all that good stuff... yeah...
 std::vector<command_block> handle_input(string input_string) {
